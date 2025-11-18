@@ -72,5 +72,7 @@ int main(int argc, char *argv[]) {
 
   output_file(dbfd, dbhdr);
 
+  output_file(dbfd, dbhdr);
+
   return 0;
 }

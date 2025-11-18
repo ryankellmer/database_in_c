@@ -33,7 +33,7 @@ int validate_db_header(int fd, struct dbheader_t **headerOut) {
   }
 
   struct dbheader_t *header = calloc(1, sizeof(struct dbheader_t));
-  if (header == -1) {
+  if (header == NULL) {
     printf("Malloc failed to create a database header\n");
     return STATUS_ERROR;
   }
@@ -54,21 +54,27 @@ int validate_db_header(int fd, struct dbheader_t **headerOut) {
   if (header->magic != HEADER_MAGIC) {
     printf("Improper header magic\n");
     free(header);
-    return -1;
+    return STATUS_ERROR;
   }
 
   if (header->version != 1) {
     printf("Improper header version\n");
     free(header);
-    return -1;
+    return STATUS_ERROR;
   }
 
   struct stat dbstat = {0};
-  fstat(fd, &dbstat);
+
+  if (fstat(fd, &dbstat) < 0) {
+    perror("fstat");
+    free(header);
+    return STATUS_ERROR;
+  }
+
   if (header->filesize != dbstat.st_size) {
     printf("Corrupted database\n");
     free(header);
-    return -1;
+    return STATUS_ERROR;
   }
 
   *headerOut = header;
@@ -78,7 +84,7 @@ int validate_db_header(int fd, struct dbheader_t **headerOut) {
 
 int create_db_header(int fd, struct dbheader_t **headerOut) {
   struct dbheader_t *header = calloc(1, sizeof(struct dbheader_t));
-  if (header == -1) {
+  if (header == NULL) {
     printf("Malloc failed to create a database header\n");
     return STATUS_ERROR;
   }
