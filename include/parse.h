@@ -18,6 +18,11 @@ struct employee_t {
 
 int create_db_header(int fd, struct dbheader_t **headerOut);
 int validate_db_header(int fd, struct dbheader_t **headerOut);
-void output_file(int fd, struct dbheader_t *dbhdr);
+int read_employees(int fd, struct dbheader_t *dbhdr,
+                   struct employee_t **employeesOut);
+int add_employee(struct dbheader_t *dbhdr, struct employee_t *employees,
+                 char *addstring);
+void output_file(int fd, struct dbheader_t *dbhdr,
+                 struct employee_t *employees);
 
 #endif
