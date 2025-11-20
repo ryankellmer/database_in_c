@@ -37,32 +37,31 @@ int add_employee(struct dbheader_t *dbhdr, struct employee_t **employees,
     return STATUS_ERROR;
 
   char *name = strtok(addstring, ",");
-  if (NULL == name)
-    return STATUS_ERROR;
-
   char *address = strtok(NULL, ",");
-  if (NULL == address)
-    return STATUS_ERROR;
-
   char *hours = strtok(NULL, ",");
-  if (NULL == hours)
+
+  if (!name || !address || !hours)
     return STATUS_ERROR;
 
   struct employee_t *e = *employees;
 
-  e = realloc(e, sizeof(struct employee_t) * dbhdr->count + 1);
-  if (e == NULL) {
+  int new_count = dbhdr->count + 1;
+
+  struct employee_t *newbuf = realloc(e, sizeof(struct employee_t) * new_count);
+
+  if (newbuf == NULL) {
     return STATUS_ERROR;
   }
 
-  dbhdr->count++;
+  e = newbuf;
 
-  printf("%s %s %s\n", name, address, hours);
+  int idx = dbhdr->count;
 
-  strncpy(e[dbhdr->count - 1].name, name, sizeof(e[dbhdr->count - 1].name) - 1);
-  strncpy(e[dbhdr->count - 1].address, address,
-          sizeof(e[dbhdr->count - 1].address) - 1);
-  e[dbhdr->count - 1].hours = atoi(hours);
+  strncpy(e[idx].name, name, sizeof(e[idx].name) - 1);
+  strncpy(e[idx].address, address, sizeof(e[idx].address) - 1);
+  e[idx].hours = atoi(hours);
+
+  dbhdr->count = new_count;
 
   *employees = e;
 
