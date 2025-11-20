@@ -11,8 +11,12 @@
 #include "../include/parse.h"
 
 int list_employees(struct dbheader_t *dbhdr, struct employee_t *employees) {
-  int employeeCount = dbhdr->count;
-  for (int i = 0; i < employeeCount; i++) {
+  if (NULL == dbhdr)
+    return STATUS_ERROR;
+  if (NULL == employees)
+    return STATUS_ERROR;
+
+  for (int i = 0; i < dbhdr->count; i++) {
     printf("Employee %d\n", i);
     printf("\tName: %s\n", employees[i].name);
     printf("\tAddress: %s\n", employees[i].address);
